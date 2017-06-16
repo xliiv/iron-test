@@ -182,7 +182,7 @@ mod test {
     #[test]
     fn test_get() {
         let response = get("http://localhost:3000", Headers::new(), &HelloWorldHandler);
-        let result = extract_body_to_bytes(response.unwrap());
+        let result = extract_body_to_bytes(&mut response.unwrap());
 
         assert_eq!(result, b"Hello, world!");
     }
@@ -196,7 +196,7 @@ mod test {
                             headers,
                             "first_name=Example&last_name=User",
                             &PostHandler);
-        let result = extract_body_to_bytes(response.unwrap());
+        let result = extract_body_to_bytes(&mut response.unwrap());
 
         assert_eq!(result, b"Example User");
     }
@@ -213,7 +213,7 @@ mod test {
                              headers,
                              "first_name=Example&last_name=User",
                              &router);
-        let result = extract_body_to_bytes(response.unwrap());
+        let result = extract_body_to_bytes(&mut response.unwrap());
 
         assert_eq!(result, b"Example User 1");
     }
@@ -230,7 +230,7 @@ mod test {
                            headers,
                            "first_name=Example&last_name=User",
                            &router);
-        let result = extract_body_to_bytes(response.unwrap());
+        let result = extract_body_to_bytes(&mut response.unwrap());
 
         assert_eq!(result, b"Example User 2");
     }
@@ -241,7 +241,7 @@ mod test {
         router.delete("/:id", RouterHandler, "update");
 
         let response = delete("http://localhost:3000/1", Headers::new(), &router);
-        let result = extract_body_to_bytes(response.unwrap());
+        let result = extract_body_to_bytes(&mut response.unwrap());
 
         assert_eq!(result, b"1");
     }
@@ -250,7 +250,7 @@ mod test {
     #[test]
     fn test_options() {
         let response = options("http://localhost:3000/users/options", Headers::new(), &OptionsHandler);
-        let result = extract_body_to_bytes(response.unwrap());
+        let result = extract_body_to_bytes(&mut response.unwrap());
 
         assert_eq!(result, b"ALLOW: GET,POST");
     }
@@ -258,7 +258,7 @@ mod test {
     #[test]
     fn test_head() {
         let response = head("http://localhost:3000/users", Headers::new(), &HeadHandler);
-        let result = extract_body_to_bytes(response.unwrap());
+        let result = extract_body_to_bytes(&mut response.unwrap());
 
         assert_eq!(result, []);
     }
@@ -267,7 +267,7 @@ mod test {
     fn test_user_agent_not_provided() {
         let headers = Headers::new();
         let response = get("http://localhost:3000/", headers, &UserAgentHandler);
-        let result = extract_body_to_string(response.unwrap());
+        let result = extract_body_to_string(&mut response.unwrap());
 
         assert_eq!(result, "iron-test");
     }
@@ -277,7 +277,7 @@ mod test {
         let mut headers = Headers::new();
         headers.set(headers::UserAgent("CustomAgent/1.0".to_owned()));
         let response = get("http://localhost:3000/", headers, &UserAgentHandler);
-        let result = extract_body_to_string(response.unwrap());
+        let result = extract_body_to_string(&mut response.unwrap());
 
         assert_eq!(result, "CustomAgent/1.0");
     }
@@ -285,7 +285,7 @@ mod test {
     #[test]
     fn test_percent_decoded_url() {
         let response = head("http://localhost:3000/some path with spaces", Headers::new(), &HeadHandler);
-        let result = extract_body_to_bytes(response.unwrap());
+        let result = extract_body_to_bytes(&mut response.unwrap());
 
         assert_eq!(result, []);
     }
