@@ -46,7 +46,7 @@ pub fn head<H: Handler>(path: &str, headers: Headers, handler: &H) -> IronResult
     request(method::Head, path, "", headers, handler)
 }
 
-/// Constructs an Iron::Request from the given parts and passes it to the
+/// Constructs an `Iron::Request` from the given parts and passes it to the
 /// `handle` method on the given Handler.
 pub fn request<H: Handler>(method: method::Method,
                            path: &str,
